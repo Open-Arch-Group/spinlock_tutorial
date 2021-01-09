@@ -25,6 +25,16 @@
 
 \chapter{Introduction}
 
+In multi-threaded applications, threads will often share data. If the shared data is read-only, the programmer does not need to do anything extra to ensure functional correctness. However, if multiple threads want to modify (write) the same data, we often need a mutual exclusion device.
+
+If we need to serialize the update of a single piece of data (using something like increment or addition), we can often directly use atomic operations. If we need to serialize access to a more complex routine, we use a lock.
+
+\section{What Are Spinlocks}
+
+The type of lock we'll be studying in this paper is the spinlock. Spinlocks are a mutual exclusion device that when waiting for the lock, does a form of busy-waiting to keep the thread from being descheduled while it waits for the lock to become free.
+
+Busy-waiting can be wasteful if the a thread is waiting a long time for access to the critical section because it starves threads that have meaningful work to do access to resources. However, if threads are waiting a short time for access to the lock, the cost of busy-waiting can be far lower than that of de-scheduling then re-scheduling a thread.
+
 \chapter{Baseline}
 
 \chapter{Spinning Locally}
