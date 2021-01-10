@@ -27,31 +27,92 @@
 
 In multi-threaded applications, threads will often share data. If the shared data is read-only, the programmer does not need to do anything extra to ensure functional correctness. However, if multiple threads want to modify (write) the same data, we often need a mutual exclusion device.
 
-If we need to serialize the update of a single piece of data (using something like increment or addition), we can often directly use atomic operations. If we need to serialize access to a more complex routine, we use a lock.
+If we need to serialize the update of a single piece of data (using something like increment or addition), we can often directly use atomic operations. If we need to serialize access to a more complex routine, we need a lock.
 
 \section{What Are Spinlocks}
 
-The type of lock we'll be studying in this paper is the spinlock. Spinlocks are a mutual exclusion device that when waiting for the lock, does a form of busy-waiting to keep the thread from being descheduled while it waits for the lock to become free.
+The type of lock we'll be studying in this paper is the spinlock. Spinlocks are a mutual exclusion device that, when waiting for the lock, busy-waits to keep the thread from being descheduled while it waits for the lock to become free.
 
 Busy-waiting can be wasteful if the a thread is waiting a long time for access to the critical section because it starves threads that have meaningful work to do access to resources. However, if threads are waiting a short time for access to the lock, the cost of busy-waiting can be far lower than that of de-scheduling then re-scheduling a thread.
 
 \chapter{Baseline}
 
+\section{Design}
+
+At its core, a spinlock has three parts:
+
+\begin{enumerate}
+  \item State to track if the spinlock is locked
+  \item A method to lock the spinlock
+  \item A method to unlock the spinlock
+\end{enumerate}
+
+\subsection{Spinlock State}
+
+Our spinlock state has two requirements:
+
+\begin{enumerate}
+  \item The ability to represent two states (locked and unlocked)
+  \item The ability to handle modifications from multiple threads at once
+\end{enumerate}
+
+To satisfy these requirements, we can use a \lstinline{std::atomic<bool>}.
+
+\subsection{Lock Method}
+
+\subsection{Unlock Method}
+
+\section{Results}
+
 \chapter{Spinning Locally}
+
+To address the large number of cache misses in our baseline implementation, we first need to understand where they are coming from.
+
+\section{Design}
+
+\section{Results}
 
 \chapter{Active Backoff}
 
+Although we addressed the constant contention our spinlock was under, we still have bursty contention whenever the lock is released. To address this, we'll be applying an optimization called active backoff.
+
+\section{Design}
+
+\section{Results}
+
 \chapter{Passive Backoff}
+
+While our active backoff optimization helped reduce the bursty contention of our spinlock, we are wasting power executing thousands, millions, or even billions of instructions just to add a delay between our poll of the spinlock state. To address this, we'll be applying an optimization called passive backoff.
+
+\section{Design}
+
+\section{Results}
 
 \chapter{Non-Constant Backoff}
 
 \section{Exponential Backoff}
 
+\subsection{Design}
+
+\subsection{Results}
+
 \section{Random Backoff}
+
+\subsection{Design}
+
+\subsection{Results}
 
 \chapter{Ticket Spinlock}
 
+\section{Design}
+
+\section{Results}
+
 \chapter{Pthread Spinlock}
+
+\section{Design}
+
+\section{Results}
 
 \chapter{Conclusion}
 
