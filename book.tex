@@ -90,6 +90,10 @@ While our active backoff optimization helped reduce the bursty contention of our
 
 \chapter{Non-Constant Backoff}
 
+Backoff for a constant number of iterations is not always a good design choice. If the lock is released very quickly, threads may be unnecessarily waiting in the backoff loop while the lock is free. Likewise, if threads take a long time to release the lock, we may want waiting threads to stay in the backoff loop for a long time.
+
+In this chapter, we will look at two different non-constant backoff implementations: random backoff and exponential backoff.
+
 \section{Exponential Backoff}
 
 \subsection{Design}
